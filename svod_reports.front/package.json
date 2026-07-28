@@ -1,0 +1,30 @@
+{
+  "name": "svod_reports.front",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 61572",
+    "preview": "vite preview --port 61572",
+    "lint": "oxlint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fortune-sheet/react": "^1.0.4",
+    "@mui/icons-material": "^9.2.0",
+    "@mui/material": "^9.2.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@module-federation/runtime": "^2.8.0",
+    "@module-federation/vite": "^1.19.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "eslint": "^10.7.0",
+    "oxlint": "^1.71.0",
+    "vite": "^8.1.1"
+  }
+}

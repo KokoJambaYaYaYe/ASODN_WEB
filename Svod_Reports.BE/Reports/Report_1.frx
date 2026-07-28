@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/24/2026 15:00:00" ReportInfo.Modified="07/24/2026 15:30:00" ReportInfo.CreatorVersion="2026.1.0">
+  <Dictionary/>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    
+    <!-- Заголовок отчета (Title) -->
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="94.5">
+      <TextObject Name="TxtTitle" Left="0" Top="18.9" Width="718.2" Height="37.8" Text="ДЕМОНСТРАЦИОННЫЙ ОТЧЕТ" HorzAlign="Center" VertAlign="Center" Font="Arial, 18pt, FontStyle=Bold" TextColor="WebColor=RoyalBlue"/>
+      <TextObject Name="TxtSubtitle" Left="0" Top="56.7" Width="718.2" Height="18.9" Text="Сгенерировано FastReport Open Source (Без Базы Данных)" HorzAlign="Center" Font="Arial, 10pt, FontStyle=Italic" TextColor="DimGray"/>
+      <LineObject Name="LineTop" Left="0" Top="85.05" Width="718.2" Border.Color="LightGray" Border.Width="2"/>
+    </ReportTitleBand>
+    
+    <!-- Заголовок страницы (Page Header) -->
+    <PageHeaderBand Name="PageHeader1" Top="98.5" Width="718.2" Height="37.8">
+      <TextObject Name="TxtDateLabel" Left="9.45" Top="9.45" Width="141.75" Height="18.9" Text="Дата формирования:" Font="Arial, 10pt, FontStyle=Bold"/>
+      <!-- Используем системную переменную [Date] -->
+      <TextObject Name="TxtDateValue" Left="151.2" Top="9.45" Width="189" Height="18.9" Text="[Date]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+    </PageHeaderBand>
+    
+    <!-- Данные (Data Band) -->
+    <!-- Так как источника данных нет, ставим MaxRows=&quot;1&quot;, чтобы строка отрендерилась ровно один раз -->
+    <DataBand Name="Data1" Top="140.3" Width="718.2" Height="113.4" MaxRows="1">
+      <ShapeObject Name="ShapeBox" Left="9.45" Top="9.45" Width="699.3" Height="94.5" Fill.Color="WhiteSmoke" Border.Color="Gainsboro" Shape="RoundRectangle"/>
+      <TextObject Name="TxtWelcome" Left="28.35" Top="28.35" Width="661.5" Height="28.35" Text="Приветствуем в панели просмотра отчетов!" Font="Arial, 14pt" TextColor="DarkSlateGray"/>
+      <TextObject Name="TxtDescription" Left="28.35" Top="56.7" Width="661.5" Height="37.8" Text="Этот шаблон не использует SQL-запросы или таблицы. Он демонстрирует корректную работу интеграции FastReport Core с вашим React-приложением на фронтенде." Font="Arial, 10pt"/>
+    </DataBand>
+    
+    <!-- Подвал страницы (Page Footer) -->
+    <PageFooterBand Name="PageFooter1" Top="257.7" Width="718.2" Height="37.8">
+      <LineObject Name="LineBottom" Left="0" Top="0" Width="718.2" Border.Color="LightGray"/>
+      <!-- Использование системной переменной [PageN] для нумерации -->
+      <TextObject Name="TxtPageNum" Left="529.2" Top="9.45" Width="179.55" Height="18.9" Text="Страница [PageN]" HorzAlign="Right" Font="Arial, 9pt" TextColor="Gray"/>
+    </PageFooterBand>
+    
+  </ReportPage>
+</Report>

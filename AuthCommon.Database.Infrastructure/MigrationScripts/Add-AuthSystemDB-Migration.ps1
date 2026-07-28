@@ -1,0 +1,2 @@
+Param ([string]$migration_name)
+dotnet ef migrations add $migration_name -c "AuthSystemDataBaseDBContext" -s "..\..\authSystem.BFF" -p "..\..\AuthCommon.Database.Infrastructure" -o "Migrations" --verbose

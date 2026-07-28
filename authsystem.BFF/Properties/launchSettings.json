@@ -1,0 +1,28 @@
+﻿{
+  "$schema": "https://schemastore.org",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5117",
+      "authenticationSchemes": "Negotiate",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:7210;http://localhost:5117",
+      "authenticationSchemes": [ "Anonymous", "Negotiate", "NTLM" ],
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        // Указываем Kestrel использовать ваш pfx-файл
+        "ASPNETCORE_Kestrel__Certificates__Default__Path": "auth-system.pfx",
+        "ASPNETCORE_Kestrel__Certificates__Default__Password": "1234567890"
+      }
+    }
+  }
+}

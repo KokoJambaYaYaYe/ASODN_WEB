@@ -1,0 +1,46 @@
+<Solution>
+  <Folder Name="/AuthSystem/">
+    <Project Path="authsystem.front/authsystem.front.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/AuthSystem/AuthSystem_BE/">
+    <Project Path="AuthSystem.API/AuthSystem.BFF.API.csproj" Id="7dcbdc34-f352-4360-bf2d-16cd1eadf7c2" />
+    <Project Path="authsystem.BFF/authsystem.BFF.csproj" />
+    <Project Path="AuthSystem.Service.Abstraction/AuthSystem.BFF.Service.Abstraction.csproj" Id="bd29d946-2713-4aca-938c-2e87bc0b3c81" />
+    <Project Path="AuthSystem.Service/AuthSystem.BFF.Service.csproj" Id="a2982e70-2d03-43c2-98e4-0878355c9fbc" />
+  </Folder>
+  <Folder Name="/AuthSystem/AuthSystem_Common/">
+    <Project Path="AuthCommon.Database.Infrastructure/AuthCommon.Database.Infrastructure.csproj" />
+    <Project Path="AuthCommon.Models/AuthCommon.Models.csproj" />
+    <Project Path="AuthCommon.Redis/AuthCommon.Redis.csproj" Id="0aee3dc8-5b85-4c57-97c8-34bbfb3a6421" />
+    <Project Path="Common.OpenIdDict/AuthCommon.OpenIdDict.csproj" />
+  </Folder>
+  <Folder Name="/BE_Modules/" />
+  <Folder Name="/BE_Modules/Svod_Reports_BE/">
+    <Project Path="Svod_Reports.BE.API/Svod_Reports.BE.API.csproj" Id="3d8ffdec-8e6c-43a1-8597-7949f9c0e1c1" />
+    <Project Path="Svod_Reports.BE.Service.Abstraction/Svod_Reports.BE.Service.Abstraction.csproj" Id="cf28e9a6-b32b-4661-972c-ec1c85da609f" />
+    <Project Path="Svod_Reports.BE.Service/Svod_Reports.BE.Service.csproj" Id="416ea808-5b1f-420f-9ac4-f62bf8d03173" />
+    <Project Path="Svod_Reports.BE/Svod_Reports.BE.csproj" Id="26925aeb-0de7-4bf5-87df-92b5910fd9c8" />
+  </Folder>
+  <Folder Name="/Common/">
+    <Project Path="Common.Redis/Common.Redis.csproj" />
+  </Folder>
+  <Folder Name="/FE_Modules/" />
+  <Folder Name="/FE_Modules/Svod_Reports_FE/">
+    <Project Path="svod_reports.front/svod_reports.front.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/MainFront/">
+    <Project Path="mainweb.front/mainweb.front.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="run_react_all.bat" />
+  </Folder>
+</Solution>

@@ -1,0 +1,157 @@
+/* Общие стили для структуры приложения */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Строго фиксируем высоту экрана, чтобы предотвратить общий вертикальный скролл */
+    width: 100%; /* Заменяем 100vw на 100%, чтобы ширина системного скроллбара браузера не вызывала горизонтальную прокрутку */
+    background-color: #f5f5f5;
+    overflow: hidden; /* Запрещаем скролл для всего окна приложения */
+}
+
+/* Верхняя панель */
+.app-bar {
+    background-color: #1e3a8a !important;
+    flex-shrink: 0; /* Шапка никогда не сжимается и имеет фиксированную высоту */
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    font-weight: bold !important;
+}
+
+.profile-button {
+    text-transform: none !important;
+    font-weight: 500 !important;
+}
+
+/* Контейнеры контента */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 100%; /* Занимает всю оставшуюся высоту внутри app-container */
+    width: 100%;
+    overflow: auto; /* Скроллбары появятся только внутри этой области, если контент модуля не поместится */
+}
+
+/* Динамические отступы для контента */
+.p-hub {
+    padding: 32px; /* p: 4 в MUI равен 32px */
+}
+
+.p-module {
+    padding: 0px; /* Убираем паддинги, чтобы удаленный модуль вставал ровно в края */
+}
+
+/* Экран-обертка для не-hub модулей */
+.module-wrapper {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    padding: 0px; /* Изменено с 16px на 0px, чтобы избежать лишних сдвигов и полос прокрутки */
+    border-radius: 0px; /* Изменено с 8px на 0px для эффекта "на всю страницу" */
+}
+
+/* Стартовая панель на главной */
+.hub-paper {
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    border-radius: 12px !important; /* borderRadius: 3 */
+    background-color: #ffffff;
+}
+
+.hub-title {
+    margin-bottom: 8px !important;
+    font-weight: 600 !important;
+    color: #333;
+}
+
+.hub-subtitle {
+    margin-bottom: 32px !important;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.button-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Кнопка перехода в отчеты */
+.reports-nav-button {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    font-size: 1.05rem !important;
+    text-transform: none !important;
+    background-color: #2563eb !important;
+}
+
+    .reports-nav-button:hover {
+        background-color: #1d4ed8 !important;
+    }
+
+/* Контейнеры конкретных экранов */
+.reports-screen {
+    width: 100%;
+    height: 100%; /* Изменено с 100vh на 100%, чтобы модуль подстраивался под размер родительского main-content */
+    background-color: #ffffff;
+}
+
+.loading-box {
+    padding: 32px;
+    text-align: center;
+}
+
+.profile-screen {
+    padding: 32px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Карточка профиля */
+.profile-paper {
+    padding: 32px;
+    max-width: 600px;
+    width: 100%;
+    border-radius: 12px !important;
+}
+
+.profile-title {
+    font-weight: bold !important;
+    color: #1e3a8a;
+}
+
+.profile-text-1 {
+    margin-top: 16px !important;
+}
+
+.profile-text-2 {
+    margin-top: 8px !important;
+}
+
+/* Плавающая кнопка возврата */
+.floating-home-box {
+    position: fixed; /* Сохранено fixed, чтобы кнопка всегда перекрывала контент удаленного микрофронтенда */
+    top: 16px;
+    right: 16px;
+    z-index: 1300;
+}
+
+.home-button {
+    background-color: #1e3a8a !important;
+}
+
+    .home-button:hover {
+        background-color: #172554 !important;
+    }
