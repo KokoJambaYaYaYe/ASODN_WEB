@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Box, Button, Paper, CssBaseline } from '@m
 import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import './app.css';
+import './App.css';
 import { RemoteErrorBoundary } from './RemoteErrorBoundary';
 
 // Локальные компоненты (вынесенные экраны)
