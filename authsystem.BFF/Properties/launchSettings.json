@@ -20,7 +20,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         // Указываем Kestrel использовать ваш pfx-файл
-        "ASPNETCORE_Kestrel__Certificates__Default__Path": "auth-system.pfx",
+        "ASPNETCORE_Kestrel__Certificates__Default__Path": "asodn_backend.pfx",
         "ASPNETCORE_Kestrel__Certificates__Default__Password": "1234567890"
       }
     }

@@ -85,10 +85,15 @@ export default defineConfig(({ mode }) => {
 
         server: {
             port: 63554,
-
+            // Исправление ошибки HMR и WebSocket соединения:
+            hmr: {
+                host: 'localhost',
+                protocol: 'wss',
+                clientPort: 63554,
+            },
             https: {
-                key: fs.readFileSync(path.resolve(__dirname, './.cert/key.pem')),
-                cert: fs.readFileSync(path.resolve(__dirname, './.cert/cert.pem')),
+                key: fs.readFileSync(path.resolve(__dirname, './.cert/main-container-key.pem')),
+                cert: fs.readFileSync(path.resolve(__dirname, './.cert/main-container-cert.pem')),
             },
         },
 

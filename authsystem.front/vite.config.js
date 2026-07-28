@@ -29,8 +29,8 @@ export default defineConfig({
         port: 60113,
         https: {
             // Использование path.resolve делает пути надежнее
-            key: fs.readFileSync(path.resolve(__dirname, "./.cert/key.pem")),
-            cert: fs.readFileSync(path.resolve(__dirname, "./.cert/cert.pem")),
+            key: fs.readFileSync(path.resolve(__dirname, "./.cert/main-container-key.pem")),
+            cert: fs.readFileSync(path.resolve(__dirname, "./.cert/main-container-cert.pem")),
         }
     },
     // preview: {

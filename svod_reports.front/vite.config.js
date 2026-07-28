@@ -51,8 +51,8 @@ export default defineConfig({
         // загрузку remoteEntry.js по обычному HTTP из-за политик безопасности (Mixed Content)
         https: {
             // Абсолютные пути к SSL-сертификатам локальной машины
-            key: fs.readFileSync(path.resolve(__dirname, "./.cert/key.pem")),
-            cert: fs.readFileSync(path.resolve(__dirname, "./.cert/cert.pem")),
+            key: fs.readFileSync(path.resolve(__dirname, "./.cert/main-container-key.pem")),
+            cert: fs.readFileSync(path.resolve(__dirname, "./.cert/main-container-cert.pem")),
         },
 
         // Настройка прокси-сервера для обхода CORS ограничений при запросах к бэкенду
