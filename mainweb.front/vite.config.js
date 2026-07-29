@@ -23,14 +23,15 @@ export default defineConfig(({ mode }) => {
                     svod_reports_module: {
                         type: 'module',
                         name: 'svod_reports_module',
-                        entry: `${env.VITE_SVOD_REPORTS_MODULE_URL}/remoteEntry.js`,
+                        // Убрали слэш перед remoteEntry.js, так как он теперь приходит из переменной
+                        entry: `${env.VITE_SVOD_REPORTS_MODULE_URL}remoteEntry.js`,
                     },
-
                     authsystem_module: {
                         type: 'module',
                         name: 'authsystem_module',
-                        entry: `${env.VITE_AUTHSYSTEM_MODULE_URL}/remoteEntry.js`,
-                    },
+                        // Убрали слэш перед remoteEntry.js
+                        entry: `${env.VITE_AUTHSYSTEM_MODULE_URL}remoteEntry.js`,
+                    }, 
                 },
 
                 dts: false,
