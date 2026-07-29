@@ -4,6 +4,7 @@ using AuthSystem.Service.Service;
 using Common.OpenIdDict.Extension;
 using Common.Redis.Constants;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using OpenIddict.Validation.AspNetCore;
 using Scalar.AspNetCore;
@@ -118,6 +119,15 @@ builder.Services.AddControllers();
 #region APP
 
 var app = builder.Build();
+
+if (app.Environment.IsProduction())
+{
+    // Этот блок должен идти до аутентификации, авторизации и маршрутизации:
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    });
+}
 
 // (Опционально) Логирование HTTP-запросов
 app.UseSerilogRequestLogging();
