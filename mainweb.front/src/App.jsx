@@ -13,7 +13,7 @@ import ProfileScreenCom from './main_page/components/ProfileScreenCom';
 import FloatingHomeButtonCom from './main_page/components/FloatingHomeButtonCom';
 
 // Ленивая загрузка удаленного модуля
-const RemoteSvodApp = lazy(() => import('svod_reports_module/App'));
+// const RemoteSvodApp = lazy(() => import('svod_reports_module/App'));
 const RemoteAuthApp = lazy(() =>
     import('authsystem_module/components').then(module => ({ default: module.AuthForm }))
 );
@@ -110,18 +110,20 @@ function App() {
                 <HubScreenCom activeModule={activeModule} onNavigate={handleNavigate} />
 
                 {/* 3. Микрофронтенд отчетов */}
-                {activeModule === 'svod_reports_module' && (
-                    <Box className="reports-screen">
-                        <RemoteErrorBoundary
-                            onErrorStateChange={setHasModuleError}
-                            onNavigateToHub={() => handleNavigateToHub()} // Прокидываем функцию навигации внутрь класса
-                        >
-                            <Suspense fallback={<Box className="loading-box">Загрузка отчетов...</Box>}>
-                                <RemoteSvodApp />
-                            </Suspense>
-                        </RemoteErrorBoundary>
-                    </Box>
-                )}
+                {
+                    // activeModule === 'svod_reports_module' && (
+                    // <Box className="reports-screen">
+                    //     <RemoteErrorBoundary
+                    //         onErrorStateChange={setHasModuleError}
+                    //         onNavigateToHub={() => handleNavigateToHub()} // Прокидываем функцию навигации внутрь класса
+                    //     >
+                    //         <Suspense fallback={<Box className="loading-box">Загрузка отчетов...</Box>}>
+                    //             <RemoteSvodApp />
+                    //         </Suspense>
+                    //     </RemoteErrorBoundary>
+                    // </Box>
+                    // )
+                }
 
                 {/* 4. Личный кабинет пользователя */}
                 <ProfileScreenCom
