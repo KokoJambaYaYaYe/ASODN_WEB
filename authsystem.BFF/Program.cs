@@ -43,9 +43,6 @@ builder.Services.AddCors(options => {
     );
 });
 
-
-
-
 #region Redis
 
 // --- НАСТРОЙКА REDIS ---
@@ -117,49 +114,48 @@ builder.Services.AddControllers();
 #endregion Builder
 
 #region APP
-
 var app = builder.Build();
 
+// Использовать заголовки Nginx (X-Forwarded-For и X-Forwarded-Proto) в Production.
+// Этот блок ОБЯЗАТЕЛЬНО должен идти самым первым, до маршрутизации и CORS.
 if (app.Environment.IsProduction())
 {
-    // Этот блок должен идти до аутентификации, авторизации и маршрутизации:
     app.UseForwardedHeaders(new ForwardedHeadersOptions
     {
-        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
+                           Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
     });
 }
-
-// (Опционально) Логирование HTTP-запросов
-app.UseSerilogRequestLogging();
-
-// --- КОНВЕЙЕР ОБРАБОТКИ (MIDDLEWARE) ---
-// ПОРЯДОК ВЫЗОВОВ ИМЕЕТ ЗНАЧЕНИЕ ДЛЯ БЕЗОПАСНОСТИ
-
-if (app.Environment.IsDevelopment())
+else
 {
-    app.MapOpenApi(); // Генерирует JSON/YAML спецификацию
+    app.MapOpenApi(); // Генерирует спецификацию при разработке
     app.MapScalarApiReference(); // Отображает UI
-    app.UseDeveloperExceptionPage(); // Подробные ошибки в консоли при разработке
+    app.UseDeveloperExceptionPage(); // Подробные ошибки при разработке
 }
 
-app.UseRouting(); // 1. Определяем, какой маршрут вызван
+// Логирование HTTP-запросов через Serilog
+app.UseSerilogRequestLogging();
 
-// 2. Применяем правила CORS до того, как сработает авторизация
+// Включаем маршрутизацию (определяем, какой контроллер вызван)
+app.UseRouting();
+
+// Применяем правила CORS строго ПОСЛЕ UseRouting, но ДО авторизации
 app.UseCors("AllowReactApp");
 
-app.UseForwardedHeaders();
+// Перенаправление на HTTPS. 
+// ВНИМАНИЕ: Если у вас SSL-сертификат (PFX) настроен внутри самого .NET приложения, 
+// эту строку нужно оставить. Если SSL «терминируется» (настроен) на Nginx, 
+// а до .NET запрос идет по обычному HTTP, эту строку лучше закомментировать // app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
-app.UseHttpsRedirection();
-
-// 3. Проверяем, кто делает запрос (токены/куки)
+// Проверяем токены/куки (Кто делает запрос)
 app.UseAuthentication();
 
-// 4. Проверяем, есть ли у пользователя права на действие
+// Проверяем права доступа (Разрешено ли действие)
 app.UseAuthorization();
 
-// 5. Выполняем логику контроллеров
+// Маппинг эндпоинтов контроллеров
 app.MapControllers();
 
 app.Run();
-
 #endregion APP

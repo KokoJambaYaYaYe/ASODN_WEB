@@ -21,8 +21,4 @@
     <ProjectReference Include="..\AuthCommon.Models\AuthCommon.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

@@ -22,7 +22,7 @@ namespace AuthCommon.Database.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.Role", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.Role", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,7 +60,7 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.RoleClaim", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.RoleClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,7 +93,7 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.User", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -200,7 +200,7 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.UserClaim", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.UserClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -224,7 +224,7 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                     b.ToTable("UserClaims", "Auth");
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.UserLogin", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.UserLogin", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("text");
@@ -245,7 +245,7 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                     b.ToTable("UserLogins", "Auth");
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.UserRole", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.UserRole", b =>
                 {
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -267,7 +267,7 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.UserToken", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.UserToken", b =>
                 {
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -502,9 +502,9 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                     b.ToTable("Tokens", "OIDC");
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.RoleClaim", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.RoleClaim", b =>
                 {
-                    b.HasOne("AuthSystem.Models.EntityModels.AuthModels.Role", "Role")
+                    b.HasOne("AuthCommon.Models.EntityModels.AuthModels.Role", "Role")
                         .WithMany("RoleClaims")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -513,9 +513,9 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.UserClaim", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.UserClaim", b =>
                 {
-                    b.HasOne("AuthSystem.Models.EntityModels.AuthModels.User", "User")
+                    b.HasOne("AuthCommon.Models.EntityModels.AuthModels.User", "User")
                         .WithMany("UserClaims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -524,9 +524,9 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.UserLogin", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.UserLogin", b =>
                 {
-                    b.HasOne("AuthSystem.Models.EntityModels.AuthModels.User", "User")
+                    b.HasOne("AuthCommon.Models.EntityModels.AuthModels.User", "User")
                         .WithMany("UserLogins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -535,15 +535,15 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.UserRole", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.UserRole", b =>
                 {
-                    b.HasOne("AuthSystem.Models.EntityModels.AuthModels.Role", "Role")
+                    b.HasOne("AuthCommon.Models.EntityModels.AuthModels.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AuthSystem.Models.EntityModels.AuthModels.User", "User")
+                    b.HasOne("AuthCommon.Models.EntityModels.AuthModels.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -554,9 +554,9 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.UserToken", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.UserToken", b =>
                 {
-                    b.HasOne("AuthSystem.Models.EntityModels.AuthModels.User", "User")
+                    b.HasOne("AuthCommon.Models.EntityModels.AuthModels.User", "User")
                         .WithMany("UserTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -589,14 +589,14 @@ namespace AuthCommon.Database.Infrastructure.Migrations
                     b.Navigation("Authorization");
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.Role", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.Role", b =>
                 {
                     b.Navigation("RoleClaims");
 
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("AuthSystem.Models.EntityModels.AuthModels.User", b =>
+            modelBuilder.Entity("AuthCommon.Models.EntityModels.AuthModels.User", b =>
                 {
                     b.Navigation("UserClaims");
 
