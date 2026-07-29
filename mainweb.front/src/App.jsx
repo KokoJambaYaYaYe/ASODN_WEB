@@ -47,31 +47,36 @@ function App() {
 
             const baseUrl = import.meta.env.VITE_AUTH_API_URL;
 
-            fetch(`${baseUrl}/profile/info`, {
-                    method: 'GET',
-                    credentials: 'include' // КРИТИЧНО для передачи сессионной куки
-                })
-                    .then((res) => {
-                        if (res.ok) {
-                            // Если бэкенд ответил 200 OK, значит кука валидна, пользователь авторизован!
-                            setIsLogined(true);
-                            return res.json();
-                        } else {
-                            // Если 401 Unauthorized, значит куки нет — отправляем на форму входа
-                            setIsLogined(false);
-                            setActiveModule('authsystem_module');
-                        }
-                        
-                    })
-                    .then((data) => {
-                        setProfileData(data);
-                        setProfileLoading(false);
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                        setProfileError(err.message);
-                        setProfileLoading(false);
-                    });
+            // fetch(`${baseUrl}/profile/info`, {
+            //         method: 'GET',
+            //         credentials: 'include' // КРИТИЧНО для передачи сессионной куки
+            //     })
+            //         .then((res) => {
+            //             if (res.ok) {
+            //                 // Если бэкенд ответил 200 OK, значит кука валидна, пользователь авторизован!
+            //                 setIsLogined(true);
+            //                 return res.json();
+            //             } else {
+            //                 // Если 401 Unauthorized, значит куки нет — отправляем на форму входа
+            //                 setIsLogined(false);
+            //                 setActiveModule('authsystem_module');
+            //             }
+
+            //         })
+            //         .then((data) => {
+            //             setProfileData(data);
+            //             setProfileLoading(false);
+            //         })
+            //         .catch((err) => {
+            //             console.error(err);
+            //             setProfileError(err.message);
+            //             setProfileLoading(false);
+            //         });
+
+
+            // Если 401 Unauthorized, значит куки нет — отправляем на форму входа
+            setIsLogined(false);
+            setActiveModule('authsystem_module');
                       
         }
     };
