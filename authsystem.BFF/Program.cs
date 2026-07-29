@@ -30,7 +30,7 @@ builder.Services.AddCors(options => {
         policy => {
             policy
                 // КРИТИЧНО: Меняем https на http и добавляем оба порта
-                .WithOrigins("https://localhost:60113", "https://localhost:63554")
+                .WithOrigins("https://asodn.mod.com", "https://localhost:60113", "https://localhost:63554")
 
                 // Для надежности при работе с Negotiate лучше оставить .AllowAnyMethod() и .AllowAnyHeader(),
                 // так как браузер при handshake может генерировать специфические заголовки
