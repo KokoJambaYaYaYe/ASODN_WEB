@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace AuthSystem.BFF.API.Controller;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("authsystem_api/[controller]")]
 public class AuthLogoutController : ControllerBase
 {
     private readonly IOpenIddictTokenManager _tokenManager;

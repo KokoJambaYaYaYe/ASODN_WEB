@@ -18,7 +18,7 @@ export default function HubScreenCom({ activeModule, onNavigate }) {
                     variant="contained"
                     size="large"
                     startIcon={<BarChartIcon />}
-                    onClick={() => onNavigate('svod_reports')}
+                    onClick={() => onNavigate('svod_reports_module')}
                     className="reports-nav-button"
                 >
                     Сводная отчетность

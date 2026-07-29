@@ -17,19 +17,19 @@ export default defineConfig(({ mode }) => {
             plugin(),
 
             federation({
-                name: 'main-container',
+                name: 'asodn-main-front',
 
                 remotes: {
-                    svod_reports: {
+                    svod_reports_module: {
                         type: 'module',
-                        name: 'svod_reports',
-                        entry: `${env.VITE_SVOD_REPORTS_URL}/remoteEntry.js`,
+                        name: 'svod_reports_module',
+                        entry: `${env.VITE_SVOD_REPORTS_MODULE_URL}/remoteEntry.js`,
                     },
 
-                    auth_module: {
+                    authsystem_module: {
                         type: 'module',
-                        name: 'auth_module',
-                        entry: `${env.VITE_AUTH_MODULE_URL}/remoteEntry.js`,
+                        name: 'authsystem_module',
+                        entry: `${env.VITE_AUTHSYSTEM_MODULE_URL}/remoteEntry.js`,
                     },
                 },
 
@@ -85,15 +85,9 @@ export default defineConfig(({ mode }) => {
 
         server: {
             port: 63554,
-            // Исправление ошибки HMR и WebSocket соединения:
-            hmr: {
-                host: 'localhost',
-                protocol: 'wss',
-                clientPort: 63554,
-            },
             https: {
-                key: fs.readFileSync(path.resolve(__dirname, './.cert/main-container-key.pem')),
-                cert: fs.readFileSync(path.resolve(__dirname, './.cert/main-container-cert.pem')),
+                key: fs.readFileSync(path.resolve(__dirname, './.cert/key.pem')),
+                cert: fs.readFileSync(path.resolve(__dirname, './.cert/cert.pem')),
             },
         },
 

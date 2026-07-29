@@ -10,12 +10,12 @@ export default function AuthForm() {
     const handleCredentialsSubmit = (e) => {
         e.preventDefault();
 
-        const baseUrl = import.meta.env.VITE_API_URL || 'https://localhost:7210';
+        const baseUrl = import.meta.env.VITE_API_URL;
 
         // Получаем текущий URL, в котором содержатся OIDC-параметры от OpenIddict
         const currentUrl = window.location.href;
 
-        fetch(`${baseUrl}/api/authcredentials/login`, {
+        fetch(`${baseUrl}/authsystem_api/authcredentials/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -47,7 +47,7 @@ export default function AuthForm() {
     };
     const handleWindowsAuth = () => {
         // 1. Берем базовый URL бэкенда из конфига Vite
-        const baseUrl = import.meta.env.VITE_API_URL || "https://localhost:7210";
+        const baseUrl = import.meta.env.VITE_API_URL;
 
         // 2. Текущий URL (включая параметры OpenIddict, если они есть в строке)
         const currentUrl = window.location.href;
@@ -56,7 +56,7 @@ export default function AuthForm() {
         const encodedReturnUrl = encodeURIComponent(currentUrl);
 
         // 4. Делаем полноценный переход для срабатывания NTLM/Negotiate handshake
-        window.location.href = `${baseUrl}/api/authwindows/negotiate?returnUrl=${encodedReturnUrl}`;
+        window.location.href = `${baseUrl}/authsystem_api/authwindows/negotiate?returnUrl=${encodedReturnUrl}`;
     };
 
     return (

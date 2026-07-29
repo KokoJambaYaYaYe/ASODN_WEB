@@ -5,7 +5,7 @@ using System.Security.Claims;
 namespace AuthSystem.BFF.API.Controller;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("authsystem_api/[controller]")]
 [Authorize] // Метод защищен, кука обязательна
 public class ProfileController: ControllerBase
 {

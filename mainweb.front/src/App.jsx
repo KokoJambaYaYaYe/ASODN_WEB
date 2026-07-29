@@ -13,9 +13,9 @@ import ProfileScreenCom from './main_page/components/ProfileScreenCom';
 import FloatingHomeButtonCom from './main_page/components/FloatingHomeButtonCom';
 
 // Ленивая загрузка удаленного модуля
-const RemoteSvodApp = lazy(() => import('svod_reports/App'));
+const RemoteSvodApp = lazy(() => import('svod_reports_module/App'));
 const RemoteAuthApp = lazy(() =>
-    import('auth_module/components').then(module => ({ default: module.AuthForm }))
+    import('authsystem_module/components').then(module => ({ default: module.AuthForm }))
 );
 
 function App() {
@@ -45,9 +45,9 @@ function App() {
                 setProfileLoading(true);
                 setProfileError(null);
 
-                const baseUrl = import.meta.env.VITE_API_URL || 'https://localhost:7210';
+            const baseUrl = import.meta.env.VITE_AUTH_API_URL;
 
-                fetch(`${baseUrl}/api/profile/info`, {
+            fetch(`${baseUrl}/authsystem_api/profile/info`, {
                     method: 'GET',
                     credentials: 'include' // КРИТИЧНО для передачи сессионной куки
                 })
@@ -59,7 +59,7 @@ function App() {
                         } else {
                             // Если 401 Unauthorized, значит куки нет — отправляем на форму входа
                             setIsLogined(false);
-                            setActiveModule('auth_module');
+                            setActiveModule('authsystem_module');
                         }
                         
                     })
@@ -77,7 +77,7 @@ function App() {
     };
     const handleLogoutViaRedirect = () => {
         // 1. Берем базовый URL бэкенда
-        const baseUrl = import.meta.env.VITE_API_URL || "https://localhost:7210";
+        const baseUrl = import.meta.env.VITE_AUTH_API_URL;
 
         // 2. Очищаем локальные токены перед уходом (если они есть)
         localStorage.removeItem('access_token');
@@ -110,7 +110,7 @@ function App() {
                 <HubScreenCom activeModule={activeModule} onNavigate={handleNavigate} />
 
                 {/* 3. Микрофронтенд отчетов */}
-                {activeModule === 'svod_reports' && (
+                {activeModule === 'svod_reports_module' && (
                     <Box className="reports-screen">
                         <RemoteErrorBoundary
                             onErrorStateChange={setHasModuleError}
@@ -133,7 +133,7 @@ function App() {
                 />
 
                 {/* 5. Микрофронтенд авторизации */}
-                {activeModule === 'auth_module' && (
+                {activeModule === 'authsystem_module' && (
                     <Box className="auth_module-screen">
                         <RemoteErrorBoundary onErrorStateChange={setHasModuleError}>
                             <Suspense fallback={<Box className="loading-box">Загрузка формы авторизации...</Box>}>

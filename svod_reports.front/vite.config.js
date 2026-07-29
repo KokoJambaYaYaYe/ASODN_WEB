@@ -17,7 +17,7 @@ export default defineConfig({
         // Конфигурация Module Federation для удаленного модуля (Remote)
         federation({
             // Уникальное имя микрофронтенда, по которому к нему будет обращаться Хост
-            name: 'svod_reports',
+            name: 'svod_reports_module',
 
             // Имя файла-манифеста, который будет генерироваться при сборке.
             // Хост загружает именно этот файл, чтобы узнать, какие компоненты доступны
@@ -51,8 +51,8 @@ export default defineConfig({
         // загрузку remoteEntry.js по обычному HTTP из-за политик безопасности (Mixed Content)
         https: {
             // Абсолютные пути к SSL-сертификатам локальной машины
-            key: fs.readFileSync(path.resolve(__dirname, "./.cert/main-container-key.pem")),
-            cert: fs.readFileSync(path.resolve(__dirname, "./.cert/main-container-cert.pem")),
+            key: fs.readFileSync(path.resolve(__dirname, "./.cert/key.pem")),
+            cert: fs.readFileSync(path.resolve(__dirname, "./.cert/cert.pem")),
         },
 
         // Настройка прокси-сервера для обхода CORS ограничений при запросах к бэкенду
@@ -60,14 +60,14 @@ export default defineConfig({
             // Перенаправляет все запросы вида https://localhost:61572/api/* 
             // на локальный сервер бэкенда http://localhost:5008/api/*
             '/api': {
-                target: 'http://localhost:5008',
+                target: 'https://localhost:7271',
                 changeOrigin: true, // Меняет заголовок Origin на адрес целевого сервера
             },
 
             // Прокси для корректной подгрузки статических скриптов, картинок 
             // и стилей генератора отчетов FastReport с бэкенд-сервера
             '/_content': {
-                target: 'http://localhost:5008',
+                target: 'https://localhost:7271',
                 changeOrigin: true,
             }
         }

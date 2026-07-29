@@ -11,7 +11,7 @@ using System.Security.Claims;
 namespace AuthSystem.API.Controller;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("authsystem_api/[controller]")]
 public class AuthWindowsController : ControllerBase
 {
     private readonly IUserWindowsAuthService _userWindowsAuthService;

@@ -199,8 +199,7 @@ public static class OpenIdDictExt
                 var requestPath = context.Request.Path;
 
                 // 1. Проверяем, идет ли запрос к API, GraphQL или токенам OpenIddict
-                var isApiOrTokenRequest = requestPath.StartsWithSegments("/api")
-                                       || requestPath.StartsWithSegments("/graphql")
+                var isApiOrTokenRequest = requestPath.StartsWithSegments("/authsystem_api")
                                        || requestPath.StartsWithSegments("/connect/token");
 
                 if (isApiOrTokenRequest)
@@ -237,8 +236,7 @@ public static class OpenIdDictExt
                 var requestPath = context.Request.Path;
 
                 // Проверяем все типы API и OIDC эндпоинтов
-                var isApiOrOidcRequest = requestPath.StartsWithSegments("/api")
-                                      || requestPath.StartsWithSegments("/graphql")
+                var isApiOrOidcRequest = requestPath.StartsWithSegments("/authsystem_api")
                                       || requestPath.StartsWithSegments("/connect")
                                       || (context.Request.Headers["Accept"].Any(x => x.Contains("application/json")));
 
