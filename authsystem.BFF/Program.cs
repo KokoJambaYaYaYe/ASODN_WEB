@@ -92,7 +92,7 @@ builder.Services.AddAuthentication(options => {
     // по умолчанию отправляем его на стандартную схему Кук Identity
     options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
 })
-.AddNegotiate(); // Оставляем поддержку Windows-аутентификации
+.AddNegotiate();
 
 builder.Services.AddAuthorization(options => {
     // Эта политика применяется ко всем стандартным [Authorize] контроллерам
