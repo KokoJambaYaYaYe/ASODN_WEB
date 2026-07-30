@@ -18,11 +18,12 @@ public class AuthWindowsController : ControllerBase
 
     public AuthWindowsController(IUserWindowsAuthService userWindowsAuthService) {
         _userWindowsAuthService = userWindowsAuthService;
-    } 
+    }
 
-
+    // 2. Вход для пользователей Active Directory
+    // Сюда вешаем созданную нами политику. Она принудительно запустит Negotiate handshake
+    [Authorize(Policy = "WindowsAuthPolicy")]
     [HttpGet("negotiate")]
-    [Authorize(AuthenticationSchemes = NegotiateDefaults.AuthenticationScheme)]
     public async Task<IActionResult> NegotiateLogin([FromQuery] string returnUrl = "/")
     {
         var windowsName = User.Identity?.Name;

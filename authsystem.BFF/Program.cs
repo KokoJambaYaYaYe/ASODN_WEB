@@ -3,6 +3,7 @@ using AuthSystem.Service.Abstraction.IService;
 using AuthSystem.Service.Service;
 using Common.OpenIdDict.Extension;
 using Common.Redis.Constants;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -94,14 +95,20 @@ builder.Services.AddAuthentication(options => {
 .AddNegotiate(); // Оставляем поддержку Windows-аутентификации
 
 builder.Services.AddAuthorization(options => {
-    // Вместо DefaultPolicy настраиваем DefaultPolicy.
-    // Она сработает на всех контроллерах, где написано просто [Authorize]
+    // Эта политика применяется ко всем стандартным [Authorize] контроллерам
     options.DefaultPolicy = new AuthorizationPolicyBuilder()
         .AddAuthenticationSchemes(
             OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme,
             IdentityConstants.ApplicationScheme)
         .RequireAuthenticatedUser()
         .Build();
+
+    // КРИТИЧНО: Создаем ОТДЕЛЬНУЮ политику чисто под Windows Auth
+    options.AddPolicy("WindowsAuthPolicy", policy =>
+    {
+        policy.AddAuthenticationSchemes(NegotiateDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+    });
 });
 
 builder.Services.AddScoped<IUserWindowsAuthService, UserWindowsAuthService>();
