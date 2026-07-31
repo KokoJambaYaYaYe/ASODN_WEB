@@ -84,18 +84,6 @@ builder.Services.AddDataProtectionPersistKeysToStackExchangeRedisExt(redisMultip
 
 builder.Services.AddOpenIdDictExt(builder.Configuration);
 
-// Чтение конфигурации keytab
-var windowsAuth = builder.Configuration.GetSection("WindowsAuthentication");
-var keytabPath = windowsAuth.GetValue<string>("Kerberos:KeytabPath");
-var principal = windowsAuth.GetValue<string>("Kerberos:Principal");
-
-if (!string.IsNullOrEmpty(keytabPath))
-{
-    // Установить переменную для keytab
-    Environment.SetEnvironmentVariable("KRB5_CLIENT_KTNAME", keytabPath);
-    Environment.SetEnvironmentVariable("KRB5_CONFIG", "/etc/krb5.conf");
-}
-
 
 builder.Services.AddAuthentication(options => {
     // Для проверки токенов в защищенных эндпоинтах API (Bearer)
