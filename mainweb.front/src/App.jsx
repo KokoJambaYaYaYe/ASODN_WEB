@@ -45,9 +45,9 @@ function App() {
                 setProfileLoading(true);
                 setProfileError(null);
 
-            const baseUrl = import.meta.env.VITE_AUTH_API_URL;
+            const baseAuthApiUrl = import.meta.env.VITE_AUTH_API_URL;
 
-            fetch(`${baseUrl}/profile/info`, {
+            fetch(`${baseAuthApiUrl}/authsystem_api/profile/info`, {
                     method: 'GET',
                     credentials: 'include' // КРИТИЧНО для передачи сессионной куки
                 })

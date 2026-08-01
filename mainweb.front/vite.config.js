@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
                         type: 'module',
                         name: 'authsystem_module',
                         // Убрали слэш перед remoteEntry.js
-                        entry: `${env.VITE_AUTHSYSTEM_MODULE_URL}remoteEntry.js`,
+                        entry: `${env.VITE_AUTHSYSTEM_MODULE_URL}/remoteEntry.js`,
                     }, 
                 },
 

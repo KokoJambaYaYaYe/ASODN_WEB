@@ -12,7 +12,4 @@
     <None Remove="main-container-cert.pem" />
     <None Remove="main-container-key.pem" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\authForm\" />
-  </ItemGroup>
 </Project>
