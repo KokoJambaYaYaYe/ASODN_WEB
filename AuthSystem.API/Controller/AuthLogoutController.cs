@@ -23,8 +23,8 @@ public class AuthLogoutController : ControllerBase
         _authorizationManager = authorizationManager;
     }
 
-    [HttpGet("connect/logout")]
-    [HttpPost("connect/logout")]
+    [HttpGet("~/connect/logout")]
+    [HttpPost("~/connect/logout")]
     public async Task<IActionResult> Logout([FromQuery] string returnUrl = "/")
     {
         // ЯВНО просим ASP.NET Core прочитать нашу сессионную куку
