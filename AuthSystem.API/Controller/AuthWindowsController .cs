@@ -42,7 +42,7 @@ public class AuthWindowsController : ControllerBase
         // Пример явного указания мест назначения для клеймов
         // Конфликтов не будет, так как метод принадлежит самому identity
         identity.AddClaim(OpenIddictConstants.Claims.Subject, internalUser.Id.ToString());
-        identity.AddClaim(OpenIddictConstants.Claims.Name, internalUser.WindowsUsername);
+        identity.AddClaim(OpenIddictConstants.Claims.Name, internalUser.WindowsIdentity);
         identity.AddClaim("display_name", internalUser.DisplayName);
 
         identity.AddClaim(new Claim("amr", "wia")); // "wia" — Windows Integrated Authentication

@@ -30,52 +30,46 @@ public class UserWindowsAuthService : IUserWindowsAuthService
         throw new NotImplementedException();
     }
 
-    public async Task<UserWindowsAuthModel> FindOrCreateWindowsUserAsync(string windowsUsername)
+    public async Task<UserWindowsAuthModel> FindOrCreateWindowsUserAsync(string windowsIdentity)
     {
-        var userName = ExtractWindowsUserName(windowsUsername);
+        var identity = ParseWindowsIdentity(windowsIdentity);
 
-        // 1. Ищем пользователя в ASP.NET Identity по UserName
-        var user = await _userManager.FindByNameAsync(userName);
+        var user = await _userManager.FindByNameAsync(identity.UserName);
 
-        // 2. Если пользователя нет — регистрируем его в системе
         if (user == null)
         {
-            var email = ExtractEmailPlaceholder(userName);
-
             user = new User
             {
-                UserName = userName,
-                Email = email, // Identity часто требует Email
+                UserName = identity.UserName,
+                Email = $"{identity.UserName}@local.domain",
                 EmailConfirmed = true
             };
 
             var createResult = await _userManager.CreateAsync(user);
+
             if (!createResult.Succeeded)
             {
                 var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
                 throw new Exception($"Не удалось создать Windows-пользователя: {errors}");
             }
 
-            // Опционально: Добавляем дефолтную роль "User", если она создана в системе
             const string defaultRole = "User";
+
             if (await _roleManager.RoleExistsAsync(defaultRole))
             {
                 await _userManager.AddToRoleAsync(user, defaultRole);
             }
         }
 
-        // 3. Получаем список ролей пользователя из ASP.NET Identity
         var roles = await _userManager.GetRolesAsync(user);
 
-        // 4. Возвращаем заполненную доменную модель для вашего контроллера
         return new UserWindowsAuthModel
         {
-            // Приводим string из IdentityUser.Id к типу Guid (или оставьте string, если у вас модель на string)
             Id = user.Id,
-            WindowsUsername = user.UserName ?? windowsUsername,
-            // Так как в стандартном IdentityUser нет поля DisplayName, 
-            // используем очищенный UserName (или берите из AD, как в примере выше)
-            DisplayName = ExtractDisplayName(windowsUsername),
+            UserName = identity.UserName,
+            WindowsIdentity = identity.FullIdentity,
+            Domain = identity.Domain,
+            DisplayName = identity.UserName,
             Roles = roles.ToList()
         };
     }
@@ -110,5 +104,46 @@ public class UserWindowsAuthService : IUserWindowsAuthService
     public Task<bool> IsUserActiveAsync(Guid userId)
     {
         throw new NotImplementedException();
+    }
+
+    private static WindowsIdentityInfo ParseWindowsIdentity(string identity)
+    {
+        if (string.IsNullOrWhiteSpace(identity))
+            throw new ArgumentException("Windows identity is empty.", nameof(identity));
+
+        identity = identity.Trim();
+
+        // DOMAIN\User
+        if (identity.Contains('\\'))
+        {
+            var parts = identity.Split('\\', 2);
+
+            return new WindowsIdentityInfo
+            {
+                UserName = parts[1],
+                Domain = parts[0],
+                FullIdentity = identity
+            };
+        }
+
+        // user@DOMAIN.COM
+        if (identity.Contains('@'))
+        {
+            var parts = identity.Split('@', 2);
+
+            return new WindowsIdentityInfo
+            {
+                UserName = parts[0],
+                Domain = parts[1],
+                FullIdentity = identity
+            };
+        }
+
+        return new WindowsIdentityInfo
+        {
+            UserName = identity,
+            Domain = string.Empty,
+            FullIdentity = identity
+        };
     }
 }
