@@ -72,14 +72,7 @@ public class AuthWindowsController : ControllerBase
         // Вызываем стандартный SignInAsync для записи сессионной куки в браузер
         await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
 
-        // Заменяем падучий редирект на безопасную проверку:
-        if (!string.IsNullOrEmpty(returnUrl) && (Url.IsLocalUrl(returnUrl) || returnUrl.StartsWith("https://asodn.mod.com")))
-        {
-            return Redirect(returnUrl); // Полноценный редирект 302
-        }
-
-        // Если URL пустой или неопознанный, возвращаем на корень сайта
-        return Redirect("/");
+        return Redirect(returnUrl);
     }
 
 }

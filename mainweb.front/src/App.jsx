@@ -77,7 +77,7 @@ function App() {
     };
     const handleLogoutViaRedirect = () => {
         // 1. Берем базовый URL бэкенда
-        const baseUrl = import.meta.env.VITE_AUTH_API_URL;
+        const baseUrl = import.meta.env.VITE_AUTH_URL;
 
         // 2. Очищаем локальные токены перед уходом (если они есть)
         localStorage.removeItem('access_token');
