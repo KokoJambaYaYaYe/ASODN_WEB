@@ -209,21 +209,21 @@ public static class OpenIdDictExt
                 }
 
                 // 2. КРИТИЧНО: Если неавторизованный пользователь зашел на /connect/authorize
-                if (requestPath.StartsWithSegments("/connect/authorize"))
-                {
-                    // Базовый URL вашего фронтенда из конфигурации
-                    var reactAppUrl = "https://localhost:63554";
+                //if (requestPath.StartsWithSegments("/connect/authorize"))
+                //{
+                //    // Базовый URL вашего фронтенда из конфигурации
+                //    var reactAppUrl = "https://localhost:63554";
 
-                    // Формируем returnUrl, который содержит весь исходный OIDC запрос (/connect/authorize?client_id=...)
-                    var returnUrl = context.Request.Path + context.Request.QueryString;
+                //    // Формируем returnUrl, который содержит весь исходный OIDC запрос (/connect/authorize?client_id=...)
+                //    var returnUrl = context.Request.Path + context.Request.QueryString;
 
-                    // Формируем адрес вашей React-формы авторизации
-                    var loginRedirectUrl = $"{reactAppUrl}/auth?returnUrl={Uri.EscapeDataString(returnUrl)}";
+                //    // Формируем адрес вашей React-формы авторизации
+                //    var loginRedirectUrl = $"{reactAppUrl}/auth?returnUrl={Uri.EscapeDataString(returnUrl)}";
 
-                    // Перенаправляем браузер на фронтенд Vite
-                    context.Response.Redirect(loginRedirectUrl);
-                    return Task.CompletedTask;
-                }
+                //    // Перенаправляем браузер на фронтенд Vite
+                //    context.Response.Redirect(loginRedirectUrl);
+                //    return Task.CompletedTask;
+                //}
 
                 // Для всех остальных страниц бэкенда выполняем стандартное поведение
                 context.Response.Redirect(context.RedirectUri);
