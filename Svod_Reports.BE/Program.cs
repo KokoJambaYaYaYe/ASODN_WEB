@@ -19,8 +19,9 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins(
-                "https://localhost:61572", // Старый порт микрофронтенда
-                "https://localhost:63554"  // ИСПРАВЛЕНИЕ: Новый фактический порт из вашей консоли!
+                "https://localhost:61572",
+                "https://localhost:63554",
+                "https://asod.mod.com"
               )
               .AllowAnyHeader()
               .AllowAnyMethod()
