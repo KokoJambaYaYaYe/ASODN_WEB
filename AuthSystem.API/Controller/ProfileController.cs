@@ -12,11 +12,10 @@ public class ProfileController: ControllerBase
     [HttpGet("info")]
     public IActionResult GetCurrentUserInfo()
     {
-        // 1. Получаем список всех ролей пользователя в виде List<string>
-        var roles = User.Claims
-                        .Where(c => c.Type == System.Security.Claims.ClaimTypes.Role || c.Type == "role")
-                        .Select(c => c.Value)
-                        .ToList();
+        // 1. Получаем все роли и объединяем их в строку через запятую
+        var roles = string.Join(", ", User.Claims
+                            .Where(c => c.Type == System.Security.Claims.ClaimTypes.Role || c.Type == "role")
+                            .Select(c => c.Value));
 
         // Читаем значение клейма "amr"
         var authMethod = User.FindFirstValue("amr");
