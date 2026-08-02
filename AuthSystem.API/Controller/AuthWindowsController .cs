@@ -78,7 +78,7 @@ public class AuthWindowsController : ControllerBase
             await connection.ConnectAsync("debiantechserve.mod.com", 636);
 
             // Теперь Bind пройдет успешно
-            await connection.BindAsync("MOD\\admin", "Asodn123!");
+            await connection.BindAsync("MOD\\administrator", "Asodn123!");
 
             // Ищем пользователя в каталоге
             var search = await connection.SearchAsync(
