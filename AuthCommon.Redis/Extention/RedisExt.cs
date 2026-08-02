@@ -66,9 +66,7 @@ public static class RedisExt
         // Загружаем сертификат (рекомендуется использовать X509CertificateLoader в .NET 9+)
         X509Certificate2 cert = X509CertificateLoader.LoadPkcs12FromFile(
             certPath,
-            configuration["CertificateSettings:Password"],
-            // ЭТИ ФЛАГИ ОБЯЗАТЕЛЬНЫ, чтобы .NET мог использовать приватный ключ для дешифрации в фоне
-            X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet
+            configuration["CertificateSettings:Password"]
         );
 
         Console.WriteLine("cert.Thumbprint = " + cert.Thumbprint);
