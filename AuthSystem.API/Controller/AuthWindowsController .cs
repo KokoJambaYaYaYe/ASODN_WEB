@@ -56,7 +56,9 @@ public class AuthWindowsController : ControllerBase
             identity.AddClaim(OpenIddictConstants.Claims.Role, role);
         }
 
-
+        /*
+         SSL сертификат чтобы достучаться по закрытому порту 636
+         */
 
         try
         {
@@ -81,7 +83,9 @@ public class AuthWindowsController : ControllerBase
             await connection.ConnectAsync("debiantechserve.mod.com", 636);
 
             // Вы используете встроенного Администратора домена — это сработает штатно
-            await connection.BindAsync("MOD\\administrator", "Asodn123!");
+            await connection.BindAsync(
+                "CN=Administrator,CN=Users,DC=mod,DC=com",
+                "Asodn123!");
 
             // Ищем пользователя в каталоге
             var search = await connection.SearchAsync(
@@ -95,7 +99,7 @@ public class AuthWindowsController : ControllerBase
             if (!await search.HasMoreAsync())
             {
                 _logger.LogWarning("Пользователь {User} не найден в AD", samAccountName);
-                return Unauthorized("Пользователь не найден в AD");
+                //return Unauthorized("Пользователь не найден в AD");
             }
 
             var entry = await search.NextAsync();
