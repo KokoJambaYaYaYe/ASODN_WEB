@@ -22,7 +22,7 @@ export default function ReportsView({ reportId }) {
         fetch(`${VITE_BACKEND_API_URL}/get-pdf-report?id=${reportId}`, {
             method: 'GET',
             // Если для Windows Auth / Kerberos нужны куки сессии, раскомментируйте строку ниже:
-            // credentials: 'include' 
+            credentials: 'include' 
         })
             .then(response => {
                 if (!response.ok) {

@@ -29,7 +29,11 @@ export default function ReportsView({ reportId }) {
         rawWorkbookRef.current = null;
 
         // Запрашиваем бинарный файл Excel, генерируемый вашим контроллером
-        fetch(`${VITE_BACKEND_API_URL}/get-excel-report`)
+        fetch(`${VITE_BACKEND_API_URL}/get-excel-report`, {
+            method: 'GET',
+            // Если для Windows Auth / Kerberos нужны куки сессии, раскомментируйте строку ниже:
+            credentials: 'include'
+        })
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Ошибка сервера: ${response.status}`);
