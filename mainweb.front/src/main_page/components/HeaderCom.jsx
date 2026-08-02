@@ -3,6 +3,8 @@ import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function HeaderCom({ activeModule, onNavigate }) {
+
+    // Если это не главгая страница - верхнюю панель не рисуем
     if (activeModule !== 'hub') return null;
 
     return (

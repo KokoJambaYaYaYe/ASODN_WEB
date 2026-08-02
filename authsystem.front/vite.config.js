@@ -31,7 +31,7 @@ export default defineConfig(({ mode }) => {
                 }
             }),
         ],
-            server: {
+    server: {
         port: 60113,
             https: {
             // Использование path.resolve делает пути надежнее

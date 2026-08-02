@@ -92,7 +92,6 @@ function App() {
         // 4. Делаем полноценный переход для очистки сессий на стороне сервера
         window.location.href = `${baseUrl}/connect/logout?returnUrl=${encodedReturnUrl}`;
     };
-    // Ваш старый хэндлер теперь просто вызывает новый универсальный
     const handleNavigateToHub = () => handleNavigate('hub');
 
 

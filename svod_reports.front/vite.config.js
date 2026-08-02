@@ -72,7 +72,6 @@ export default defineConfig({
             }
         }
     },
-
     // Настройки сервера предпросмотра (команда: npm run preview)
     preview: {
         port: 61572

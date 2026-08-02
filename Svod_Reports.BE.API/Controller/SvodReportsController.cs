@@ -6,7 +6,7 @@ using System.Drawing;
 namespace Svod_Reports.BE.API.Controller;
 
 [ApiController]
-[Route("api/reports")] // Задает базовый роут для совпадения с вашим React BACKEND_API_URL
+[Route("svod_reports_api/reports")] // Задает базовый роут для совпадения с вашим React BACKEND_API_URL
 public class SvodReportsController : ControllerBase
 {
     [HttpGet("get-pdf-report")] // Оставляем роут прежним, чтобы не менять фронтенд

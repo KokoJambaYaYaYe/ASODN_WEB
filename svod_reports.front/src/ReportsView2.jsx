@@ -6,7 +6,7 @@ import { Workbook } from '@fortune-sheet/react';
 import '@fortune-sheet/react/dist/index.css';
 
 export default function ReportsView({ reportId }) {
-    const BACKEND_API_URL = 'https://localhost:7271/api/reports';
+    const VITE_BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL;
 
     // Ссылка на оригинальный объект книги SheetJS, чтобы напечатать её в любой момент
     const rawWorkbookRef = useRef(null);
@@ -29,7 +29,7 @@ export default function ReportsView({ reportId }) {
         rawWorkbookRef.current = null;
 
         // Запрашиваем бинарный файл Excel, генерируемый вашим контроллером
-        fetch(`${BACKEND_API_URL}/get-excel-report`)
+        fetch(`${VITE_BACKEND_API_URL}/get-excel-report`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Ошибка сервера: ${response.status}`);
@@ -124,7 +124,7 @@ export default function ReportsView({ reportId }) {
     const handleDownload = () => {
         // Создаем временную ссылку для скачивания файла
         const link = document.createElement('a');
-        link.href = `${BACKEND_API_URL}/download-excel-report`;
+        link.href = `${VITE_BACKEND_API_URL}/download-excel-report`;
         link.setAttribute('download', `report_${reportId}.xlsx`); // Имя файла при скачивании
         document.body.appendChild(link);
         link.click();

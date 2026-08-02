@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 
 export default function ReportsView({ reportId }) {
-    const BACKEND_API_URL = 'https://localhost:7271/api/reports';
+    const VITE_BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL;
 
     if (!reportId) {
         return (
@@ -19,7 +19,7 @@ export default function ReportsView({ reportId }) {
             {/* 64px — это примерная высота AppBar шапки */}
             <iframe
                 title={`FastReport-PDF-Container-${reportId}`}
-                src={`${BACKEND_API_URL}/get-pdf-report?id=${reportId}`}
+                src={`${VITE_BACKEND_API_URL}/get-pdf-report?id=${reportId}`}
                 style={{
                     width: '100%',
                     height: '100%',
