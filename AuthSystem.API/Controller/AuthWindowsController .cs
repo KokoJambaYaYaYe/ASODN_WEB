@@ -60,66 +60,66 @@ public class AuthWindowsController : ControllerBase
 
         try
         {
-            var samAccountName = windowsName.Contains('\\')
-                ? windowsName.Split('\\')[1]
-                : windowsName;
+            // 1. ИСПРАВЛЕНИЕ: Корректно вырезаем чистый логин из форматов DOMAIN\user и user@DOMAIN.COM
+            string samAccountName = windowsName;
+
+            if (samAccountName.Contains('\\'))
+            {
+                samAccountName = samAccountName.Split('\\')[1];
+            }
+            else if (samAccountName.Contains('@'))
+            {
+                samAccountName = samAccountName.Split('@')[0]; // Для lenovo@MOD.COM возьмет просто lenovo
+            }
 
             var roles = new List<string>();
 
+            // Приказывает системной библиотеке Linux libldap игнорировать проверку сертификата
+            Environment.SetEnvironmentVariable("LDAPTLS_REQCERT", "never");
+
             using var connection = new LdapConnection();
+            connection.SecureSocketLayer = false;
 
-            // Включаем шифрование SSL/TLS
-            connection.SecureSocketLayer = true;
+            // Подключаемся к Samba AD
+            await connection.ConnectAsync("debiantechserve.mod.com", 389);
 
-            // Отключаем строгую проверку сертификата (для тестов с самоподписанными сертификатами Samba)
-            //connection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, sslPolicyErrors) => true;
-
-            // Подключаемся к Samba AD через безопасный порт 636
-            await connection.ConnectAsync("debiantechserve.mod.com", 636);
-
-            // Теперь Bind пройдет успешно
+            // Вы используете встроенного Администратора домена — это сработает штатно
             await connection.BindAsync("MOD\\administrator", "Asodn123!");
 
             // Ищем пользователя в каталоге
             var search = await connection.SearchAsync(
                 "DC=mod,DC=com",
                 LdapConnection.ScopeSub,
-                $"(sAMAccountName={samAccountName})",
-                new[]
-                {
-        "memberOf",
-        "displayName",
-        "mail"
-                },
-                false);
+                $"(sAMAccountName={samAccountName})", // Теперь здесь будет чистый "lenovo"
+                new[] { "memberOf", "displayName", "mail" },
+                false
+            );
 
             if (!await search.HasMoreAsync())
+            {
+                _logger.LogWarning("Пользователь {User} не найден в AD", samAccountName);
                 return Unauthorized("Пользователь не найден в AD");
+            }
 
-            // Берем первую найденную запись
             var entry = await search.NextAsync();
-
-            // Получаем группы пользователя
             var memberOf = entry.GetAttributeSet()["memberOf"];
 
             if (memberOf != null)
             {
                 foreach (var groupDn in memberOf.StringValueArray)
                 {
-                    // Например:
-                    // CN=ReportAdmins,OU=Groups,DC=mod,DC=com
-
+                    // Получаем CN группы (поддерживаем любой регистр "CN=" или "cn=")
                     var cn = groupDn.Split(',')[0]
-                                    .Replace("CN=", "");
-
+                                    .Replace("CN=", "", StringComparison.OrdinalIgnoreCase)
+                                    .Replace("cn=", "", StringComparison.OrdinalIgnoreCase);
                     roles.Add(cn);
                 }
             }
 
-            // Для проверки выведем найденные группы
+            // Выводим найденные группы в Serilog (Information), чтобы они гарантированно попали в логи
             foreach (var role in roles)
             {
-                Console.WriteLine($"AD group: {role}");
+                _logger.LogInformation("Успешно найдена AD группа пользователя: {Role}", role);
             }
 
             foreach (var role in roles)
@@ -127,11 +127,12 @@ public class AuthWindowsController : ControllerBase
                 identity.AddClaim(OpenIddictConstants.Claims.Role, role);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            Console.WriteLine("AD GROUPS ERROR !!!!!!!!!!!!!!!!!!!!!!!!");
-            //throw;
+            // ИСПРАВЛЕНИЕ: Обязательно пишите ex.Message в лог, чтобы видеть РЕАЛЬНУЮ причину падения в catch
+            _logger.LogError(ex, "ОШИБКА ПОДКЛЮЧЕНИЯ ИЛИ ПОИСКА В SAMBA AD!");
         }
+
 
 
 
