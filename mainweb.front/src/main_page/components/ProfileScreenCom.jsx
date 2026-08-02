@@ -20,7 +20,7 @@ export default function ProfileScreenCom({ activeModule, loading, error, data, o
                             <strong>Пользователь (Login):</strong> {data.user}
                         </Typography>
                         <Typography variant="body1" className="profile-text-2" style={{ marginBottom: '8px' }}>
-                            <strong>Роль в системе:</strong> {data.role}
+                            <strong>Роли в системе:</strong> {data.roles}
                         </Typography>
                         <Typography variant="body1" className="profile-method" style={{ color: '#555', fontStyle: 'italic' }}>
                             <strong>Способ авторизации:</strong> {data.loginMethod}
