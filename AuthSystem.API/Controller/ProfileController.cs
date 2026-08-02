@@ -12,19 +12,29 @@ public class ProfileController: ControllerBase
     [HttpGet("info")]
     public IActionResult GetCurrentUserInfo()
     {
+        // 1. Получаем список всех ролей пользователя в виде List<string>
+        var roles = User.Claims
+                        .Where(c => c.Type == System.Security.Claims.ClaimTypes.Role || c.Type == "role")
+                        .Select(c => c.Value)
+                        .ToList();
+
         // Читаем значение клейма "amr"
         var authMethod = User.FindFirstValue("amr");
 
-        if (authMethod == "wia")
+        // Формируем базовое название метода авторизации
+        string loginMethod = authMethod switch
         {
-            return Ok(new { loginMethod = "Windows (Negotiate)", user = User.Identity?.Name });
-        }
+            "wia" => "Windows (Negotiate)",
+            "pwd" => "Логин и Пароль",
+            _ => "Неизвестно"
+        };
 
-        if (authMethod == "pwd")
+        // Возвращаем результат вместе со списком ролей
+        return Ok(new
         {
-            return Ok(new { loginMethod = "Логин и Пароль", user = User.Identity?.Name });
-        }
-
-        return Ok(new { loginMethod = "Неизвестно", user = User.Identity?.Name });
+            loginMethod = loginMethod,
+            user = User.Identity?.Name,
+            roles = roles // Добавили переменную в ответ
+        });
     }
 }
