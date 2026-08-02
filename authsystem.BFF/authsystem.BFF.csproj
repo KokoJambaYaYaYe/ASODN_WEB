@@ -28,6 +28,7 @@
     <ProjectReference Include="..\AuthSystem.Service.Abstraction\AuthSystem.BFF.Service.Abstraction.csproj" />
     <ProjectReference Include="..\AuthSystem.Service\AuthSystem.BFF.Service.csproj" />
     <ProjectReference Include="..\Common.OpenIdDict\AuthCommon.OpenIdDict.csproj" />
+    <ProjectReference Include="..\Common.Serilog\Common.Serilog.csproj" />
   </ItemGroup>
 
   <ItemGroup>

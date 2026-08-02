@@ -9,10 +9,13 @@
   <ItemGroup>
     <PackageReference Include="FastReport.OpenSource.Web" Version="2026.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
-    <PackageReference Include="Microsoft.OpenApi" Version="2.3.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.10" />
+    <PackageReference Include="Microsoft.OpenApi" Version="2.9.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AuthCommon.Redis\AuthCommon.Redis.csproj" />
+    <ProjectReference Include="..\Common.Serilog\Common.Serilog.csproj" />
     <ProjectReference Include="..\Svod_Reports.BE.API\Svod_Reports.BE.API.csproj" />
   </ItemGroup>
 
@@ -21,6 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="asodn_backend.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="asodn_prod_backend.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Reports\Report_1.frx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -1,11 +1,13 @@
 ﻿using ClosedXML.Excel;
 using FastReport.Export.PdfSimple;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 
 namespace Svod_Reports.BE.API.Controller;
 
 [ApiController]
+[Authorize] // Метод защищен, кука обязательна
 [Route("svod_reports_api/reports")] // Задает базовый роут для совпадения с вашим React BACKEND_API_URL
 public class SvodReportsController : ControllerBase
 {

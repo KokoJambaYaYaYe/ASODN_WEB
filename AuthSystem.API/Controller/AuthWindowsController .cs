@@ -34,7 +34,7 @@ public class AuthWindowsController : ControllerBase
 
         // Создаем Identity для OpenIddict
         var identity = new ClaimsIdentity(
-            TokenValidationParameters.DefaultAuthenticationType,
+            IdentityConstants.ApplicationScheme,
             OpenIddictConstants.Claims.Name,
             OpenIddictConstants.Claims.Role);
 

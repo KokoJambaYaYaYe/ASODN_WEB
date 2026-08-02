@@ -137,8 +137,6 @@ public static class OpenIdDictExt
                 ForwardedHeaders.XForwardedProto;
         });
 
-        // Регистрируем реализацию ITicketStore в контейнере зависимостей (DI).
-        services.AddSingleton<ITicketStore, RedisTicketStore>();
         services.AddOptions<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme)
                 .Configure<ITicketStore>(
                     (options, store) =>

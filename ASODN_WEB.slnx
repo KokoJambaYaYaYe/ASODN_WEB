@@ -26,6 +26,7 @@
   </Folder>
   <Folder Name="/Common/">
     <Project Path="Common.Redis/Common.Redis.csproj" />
+    <Project Path="Common.Serilog/Common.Serilog.csproj" Id="0e3ef003-485b-4465-bcd5-2f1a21595d4d" />
   </Folder>
   <Folder Name="/FE_Modules/" />
   <Folder Name="/FE_Modules/Svod_Reports_FE/">
