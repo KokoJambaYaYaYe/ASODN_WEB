@@ -129,7 +129,7 @@ public class AuthWindowsController : ControllerBase
         }
         catch (Exception)
         {
-
+            Console.WriteLine("AD GROUPS ERROR !!!!!!!!!!!!!!!!!!!!!!!!");
             //throw;
         }
 
