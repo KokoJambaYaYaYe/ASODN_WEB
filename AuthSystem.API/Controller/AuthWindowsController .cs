@@ -74,9 +74,6 @@ public class AuthWindowsController : ControllerBase
 
             var roles = new List<string>();
 
-            // Приказывает системной библиотеке Linux libldap игнорировать проверку сертификата
-            Environment.SetEnvironmentVariable("LDAPTLS_REQCERT", "never");
-
             using var connection = new LdapConnection();
             connection.SecureSocketLayer = true;
 
