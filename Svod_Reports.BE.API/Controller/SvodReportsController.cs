@@ -17,7 +17,7 @@ public class SvodReportsController : ControllerBase
 
         try
         {
-            string reportPath = Path.Combine(Directory.GetCurrentDirectory(), "Reports", $"Report_{id}.frx");
+            string reportPath = Path.Combine(AppContext.BaseDirectory, "Reports", $"Report_{id}.frx");
 
             if (!System.IO.File.Exists(reportPath))
             {
