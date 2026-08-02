@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Novell.Directory.Ldap;
 using OpenIddict.Abstractions;
 using System.Security.Claims;
 
@@ -15,9 +17,11 @@ namespace AuthSystem.API.Controller;
 public class AuthWindowsController : ControllerBase
 {
     private readonly IUserWindowsAuthService _userWindowsAuthService;
+    private readonly ILogger<AuthWindowsController> _logger;
 
-    public AuthWindowsController(IUserWindowsAuthService userWindowsAuthService) {
+    public AuthWindowsController(IUserWindowsAuthService userWindowsAuthService, ILogger<AuthWindowsController> logger) {
         _userWindowsAuthService = userWindowsAuthService;
+        _logger = logger;
     }
 
     // 2. Вход для пользователей Active Directory
@@ -52,6 +56,99 @@ public class AuthWindowsController : ControllerBase
             identity.AddClaim(OpenIddictConstants.Claims.Role, role);
         }
 
+
+
+        try
+        {
+            var samAccountName = windowsName.Contains('\\')
+                ? windowsName.Split('\\')[1]
+                : windowsName;
+
+            var roles = new List<string>();
+
+            using var connection = new LdapConnection();
+
+            // Включаем шифрование SSL/TLS
+            connection.SecureSocketLayer = true;
+
+            // Отключаем строгую проверку сертификата (для тестов с самоподписанными сертификатами Samba)
+            //connection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, sslPolicyErrors) => true;
+
+            // Подключаемся к Samba AD через безопасный порт 636
+            await connection.ConnectAsync("debiantechserve.mod.com", 636);
+
+            // Теперь Bind пройдет успешно
+            await connection.BindAsync("MOD\\admin", "Asodn123!");
+
+            // Ищем пользователя в каталоге
+            var search = await connection.SearchAsync(
+                "DC=mod,DC=com",
+                LdapConnection.ScopeSub,
+                $"(sAMAccountName={samAccountName})",
+                new[]
+                {
+        "memberOf",
+        "displayName",
+        "mail"
+                },
+                false);
+
+            if (!await search.HasMoreAsync())
+                return Unauthorized("Пользователь не найден в AD");
+
+            // Берем первую найденную запись
+            var entry = await search.NextAsync();
+
+            // Получаем группы пользователя
+            var memberOf = entry.GetAttributeSet()["memberOf"];
+
+            if (memberOf != null)
+            {
+                foreach (var groupDn in memberOf.StringValueArray)
+                {
+                    // Например:
+                    // CN=ReportAdmins,OU=Groups,DC=mod,DC=com
+
+                    var cn = groupDn.Split(',')[0]
+                                    .Replace("CN=", "");
+
+                    roles.Add(cn);
+                }
+            }
+
+            // Для проверки выведем найденные группы
+            foreach (var role in roles)
+            {
+                Console.WriteLine($"AD group: {role}");
+            }
+
+            foreach (var role in roles)
+            {
+                identity.AddClaim(OpenIddictConstants.Claims.Role, role);
+            }
+        }
+        catch (Exception)
+        {
+
+            //throw;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         var principal = new ClaimsPrincipal(identity);
         principal.SetScopes(new[] {
             OpenIddictConstants.Scopes.OpenId,
@@ -71,6 +168,18 @@ public class AuthWindowsController : ControllerBase
 
         // Вызываем стандартный SignInAsync для записи сессионной куки в браузер
         await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
+
+
+        _logger.LogInformation("AuthenticationType: {Type}", principal.Identity?.AuthenticationType);
+        _logger.LogInformation("IsAuthenticated: {Auth}", principal.Identity?.IsAuthenticated);
+        _logger.LogInformation("Name: {Name}", principal.Identity?.Name);
+
+        foreach (var claim in principal.Claims)
+        {
+            _logger.LogInformation("Claim: {Type} = {Value}", claim.Type, claim.Value);
+        }
+
+
 
         return Redirect(returnUrl);
     }
