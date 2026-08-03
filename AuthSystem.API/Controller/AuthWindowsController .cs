@@ -80,7 +80,7 @@ public class AuthWindowsController : ControllerBase
             connection.SecureSocketLayer = true;
 
             // Подключаемся к Samba AD
-            await connection.ConnectAsync("debiantechserve.mod.com", 636);
+            await connection.ConnectAsync("techserver-dc.mod.com", 636);
 
             // Вы используете встроенного Администратора домена — это сработает штатно
             await connection.BindAsync(
