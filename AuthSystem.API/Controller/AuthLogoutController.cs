@@ -23,9 +23,55 @@ public class AuthLogoutController : ControllerBase
         _authorizationManager = authorizationManager;
     }
 
-    [HttpGet("~/connect/logout")]
-    [HttpPost("~/connect/logout")]
-    public async Task<IActionResult> Logout([FromQuery] string returnUrl = "/")
+    //Выход кука + OpenId
+    //[HttpGet("~/connect/logout")]
+    //[HttpPost("~/connect/logout")]
+    //public async Task<IActionResult> Logout([FromQuery] string returnUrl = "/")
+    //{
+    //    // ЯВНО просим ASP.NET Core прочитать нашу сессионную куку
+    //    var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme);
+
+    //    // Если кука валидна и пользователь найден
+    //    if (authResult.Succeeded && authResult.Principal != null)
+    //    {
+    //        var userPrincipal = authResult.Principal;
+
+    //        // Извлекаем Subject ID пользователя (его уникальный идентификатор)
+    //        var userId = userPrincipal.FindFirst(OpenIddictConstants.Claims.Subject)?.Value
+    //                     ?? userPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // На всякий случай проверяем стандартный claim
+
+    //        if (!string.IsNullOrEmpty(userId))
+    //        {
+    //            // Находим и физически удаляем все активные токены этого пользователя из Redis
+    //            var tokens = _tokenManager.FindBySubjectAsync(userId);
+    //            await foreach (var token in tokens)
+    //            {
+    //                await _tokenManager.DeleteAsync(token);
+    //            }
+
+    //            // Удаляем связанные авторизации при авторизации через openIddict (если они есть)
+    //            var authorizations = _authorizationManager.FindBySubjectAsync(userId);
+    //            await foreach (var auth in authorizations)
+    //            {
+    //                await _authorizationManager.RevokeAsync(auth);
+    //            }
+    //        }
+    //    }
+    //    // 2. Стираем Cookie-сессию из браузера
+    //    await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+
+    //    // 3. Завершаем сессию в OpenIddict и возвращаем пользователя на React
+    //    return SignOut(
+    //        authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
+    //        properties: new AuthenticationProperties
+    //        {
+    //            RedirectUri = returnUrl
+    //        });
+    //}
+
+
+    [HttpGet("web_logout")]
+    public async Task<IActionResult> WebLogout(/*string? returnUrl = "/"*/)
     {
         // ЯВНО просим ASP.NET Core прочитать нашу сессионную куку
         var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme);
@@ -47,24 +93,16 @@ public class AuthLogoutController : ControllerBase
                 {
                     await _tokenManager.DeleteAsync(token);
                 }
-
-                // Удаляем связанные авторизации
-                var authorizations = _authorizationManager.FindBySubjectAsync(userId);
-                await foreach (var auth in authorizations)
-                {
-                    await _authorizationManager.DeleteAsync(auth);
-                }
             }
         }
+
         // 2. Стираем Cookie-сессию из браузера
         await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
 
-        // 3. Завершаем сессию в OpenIddict и возвращаем пользователя на React
-        return SignOut(
-            authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-            properties: new AuthenticationProperties
-            {
-                RedirectUri = returnUrl
-            });
+        //return LocalRedirect(returnUrl ?? "/");
+
+        return Ok();
     }
+
+
 }

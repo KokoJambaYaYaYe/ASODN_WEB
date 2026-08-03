@@ -24,11 +24,8 @@ public static class OpenIdDictExt
         // Находим зарегистрированное окружение в коллекции сервисов
         var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(IWebHostEnvironment));
         var environment = serviceDescriptor?.ImplementationInstance as IWebHostEnvironment;
-
         // Если через Instance не нашлось, можно проверить через фабрику (альтернативный безопасный вариант)
         bool isDevelopment = environment?.IsDevelopment() ?? true;
-
-
 
         // 1. ОБЯЗАТЕЛЬНО: Регистрируем сам контекст БД в DI и указываем провайдер (например, PostgreSQL)
         services.RegisterAuthDBContextExt(configuration);

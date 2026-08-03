@@ -75,23 +75,47 @@ function App() {
                       
         }
     };
-    const handleLogoutViaRedirect = () => {
-        // 1. Берем базовый URL бэкенда
-        const baseUrl = import.meta.env.VITE_AUTH_URL;
 
-        // 2. Очищаем локальные токены перед уходом (если они есть)
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('id_token');
+    //Выход кука + OpenId
+    // const handleLogout_CookieOpenIDConnect_ViaRedirect = () => {
+    //     // 1. Берем базовый URL бэкенда
+    //     const baseUrl = import.meta.env.VITE_AUTH_URL;
 
-        // 3. Формируем URL возврата (после логаута вернем пользователя на корень фронтенда)
-        const currentOrigin = window.location.origin;
-        const encodedReturnUrl = encodeURIComponent(currentOrigin);
+    //     // 2. Очищаем локальные токены перед уходом (если они есть)
+    //     localStorage.removeItem('access_token');
+    //     localStorage.removeItem('id_token');
 
-        setIsLogined(false);
+    //     // 3. Формируем URL возврата (после логаута вернем пользователя на корень фронтенда)
+    //     const currentOrigin = window.location.origin;
+    //     const encodedReturnUrl = encodeURIComponent(currentOrigin);
 
-        // 4. Делаем полноценный переход для очистки сессий на стороне сервера
-        window.location.href = `${baseUrl}/connect/logout?returnUrl=${encodedReturnUrl}`;
+    //     setIsLogined(false);
+
+    //     // 4. Делаем полноценный переход для очистки сессий на стороне сервера
+    //     window.location.href = `${baseUrl}/connect/logout?returnUrl=${encodedReturnUrl}`;
+    // };
+
+    const handleLogout_CookieOnly = async () => {
+        const baseUrl = import.meta.env.VITE_AUTH_API_URL;
+
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("id_token");
+
+        const response = await fetch(
+            `${baseUrl}/authlogout/web_logout`,
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
+
+        if (response.ok) {
+            setIsLogined(false);
+            handleNavigateToHub();
+        }
     };
+
+
     const handleNavigateToHub = () => handleNavigate('hub');
 
 
@@ -130,7 +154,7 @@ function App() {
                     loading={profileLoading}
                     error={profileError}
                     data={profileData}
-                    onLogout={handleLogoutViaRedirect}
+                    onLogout={handleLogout_CookieOnly}
                 />
 
                 {/* 5. Микрофронтенд авторизации */}
