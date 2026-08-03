@@ -70,6 +70,7 @@ public class AuthLogoutController : ControllerBase
     //}
 
 
+
     [HttpGet("web_logout")]
     public async Task<IActionResult> WebLogout(/*string? returnUrl = "/"*/)
     {
