@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
+using System.Security.Claims;
 
 namespace AuthCommon.Redis;
 
@@ -55,9 +56,16 @@ public class RedisTicketStore : ITicketStore
     /// </summary>
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
     {
-        // Генерируем уникальный идентификатор для сессии
-        var key =
-            $"{_configuration["RedisSettings:ApplicationName"]}:TicketsStore:{KeyPrefix + Guid.NewGuid().ToString()}";
+        // 1. Получаем ID пользователя из Claims (ищем стандартный claim NameIdentifier / Sub)
+        var userId = ticket.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                     ?? ticket.Principal.FindFirst("sub")?.Value
+                     ?? "unknown_user";
+
+        // 2. Добавляем префикс приложения из конфигурации
+        var appName = _configuration["RedisAuthSettings:AuthApplicationName"];
+
+        // 3. Формируем ключ, включая userId
+        var key = $"{appName}:TicketsStore:{userId}:{KeyPrefix + Guid.NewGuid().ToString()}";
 
         // Сохраняем данные в Redis
         await RenewAsync(key, ticket);

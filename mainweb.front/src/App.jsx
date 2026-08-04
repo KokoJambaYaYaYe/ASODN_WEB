@@ -114,8 +114,6 @@ function App() {
             handleNavigateToHub();
         }
     };
-
-
     const handleNavigateToHub = () => handleNavigate('hub');
 
 

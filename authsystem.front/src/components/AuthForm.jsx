@@ -15,7 +15,7 @@ export default function AuthForm() {
         // Получаем текущий URL, в котором содержатся OIDC-параметры от OpenIddict
         const currentUrl = window.location.href;
 
-        fetch(`${baseUrl}/authsystem_api/authcredentials/login`, {
+        fetch(`${baseUrl}/authsystem_api/AuthCredentials/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

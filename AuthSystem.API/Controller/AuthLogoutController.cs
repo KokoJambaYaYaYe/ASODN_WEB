@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
-using OpenIddict.Server.AspNetCore;
 using System.Security.Claims;
 
 namespace AuthSystem.BFF.API.Controller;
@@ -23,6 +22,40 @@ public class AuthLogoutController : ControllerBase
         _authorizationManager = authorizationManager;
     }
 
+
+    [HttpGet("web_logout")]
+    public async Task<IActionResult> WebLogout()
+    {
+        // ЯВНО просим ASP.NET Core прочитать нашу сессионную куку
+        var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme);
+
+        // Если кука валидна и пользователь найден
+        if (authResult.Succeeded && authResult.Principal != null)
+        {
+            var userPrincipal = authResult.Principal;
+
+            // Извлекаем Subject ID пользователя (его уникальный идентификатор)
+            var userId = userPrincipal.FindFirst(OpenIddictConstants.Claims.Subject)?.Value
+                         ?? userPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // На всякий случай проверяем стандартный claim
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // Находим и физически удаляем все активные токены этого пользователя из Redis
+                var tokens = _tokenManager.FindBySubjectAsync(userId);
+                await foreach (var token in tokens)
+                {
+                    await _tokenManager.DeleteAsync(token);
+                }
+            }
+        }
+
+        // Стираем Cookie-сессию из браузера
+        await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+
+        return Ok();
+    }
+
+    /*
     //Выход кука + OpenId
     //[HttpGet("~/connect/logout")]
     //[HttpPost("~/connect/logout")]
@@ -68,42 +101,6 @@ public class AuthLogoutController : ControllerBase
     //            RedirectUri = returnUrl
     //        });
     //}
-
-
-
-    [HttpGet("web_logout")]
-    public async Task<IActionResult> WebLogout(/*string? returnUrl = "/"*/)
-    {
-        // ЯВНО просим ASP.NET Core прочитать нашу сессионную куку
-        var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme);
-
-        // Если кука валидна и пользователь найден
-        if (authResult.Succeeded && authResult.Principal != null)
-        {
-            var userPrincipal = authResult.Principal;
-
-            // Извлекаем Subject ID пользователя (его уникальный идентификатор)
-            var userId = userPrincipal.FindFirst(OpenIddictConstants.Claims.Subject)?.Value
-                         ?? userPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // На всякий случай проверяем стандартный claim
-
-            if (!string.IsNullOrEmpty(userId))
-            {
-                // Находим и физически удаляем все активные токены этого пользователя из Redis
-                var tokens = _tokenManager.FindBySubjectAsync(userId);
-                await foreach (var token in tokens)
-                {
-                    await _tokenManager.DeleteAsync(token);
-                }
-            }
-        }
-
-        // 2. Стираем Cookie-сессию из браузера
-        await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
-
-        //return LocalRedirect(returnUrl ?? "/");
-
-        return Ok();
-    }
-
+    */
 
 }

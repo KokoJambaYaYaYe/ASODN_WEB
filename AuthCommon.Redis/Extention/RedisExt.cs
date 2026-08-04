@@ -47,7 +47,7 @@ public static class RedisExt
 
     private static void AddDataProtectionPersistKeysToStackExchangeRedisExt(IServiceCollection services, ConnectionMultiplexer redisMultiplexer, IConfiguration configuration)
     {
-        string redisKey = $"{configuration["RedisSettings:ApplicationName"]}:DataProtection:";
+        string redisKey = $"{configuration["RedisAuthSettings:AuthApplicationName"]}:DataProtection:";
 
         // Формируем полный путь к сертификату
         string certPath = Path.Combine(
@@ -81,7 +81,7 @@ public static class RedisExt
             // 2. Шифруем сами ключи в Redis этим сертификатом
             .ProtectKeysWithCertificate(cert)
             // 3. Изолируем ключи этого приложения от других
-            .SetApplicationName($"{configuration["RedisSettings:ApplicationName"]}")
+            .SetApplicationName($"{configuration["RedisAuthSettings:AuthApplicationName"]}")
             // 4. Увеличиваем срок жизни ключей (по умолчанию 90 дней)
             .SetDefaultKeyLifetime(TimeSpan.FromDays(180));
     }

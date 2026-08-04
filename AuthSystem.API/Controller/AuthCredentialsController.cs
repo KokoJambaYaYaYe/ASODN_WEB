@@ -1,13 +1,10 @@
 ﻿using AuthCommon.Models.EntityModels.AuthModels;
 using AuthCommon.Models.Models;
-using AuthSystem.Service.Abstraction.IService;
+using AuthSystem.BFF.Service.Abstraction.IService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using OpenIddict.Abstractions;
-using System.Security.Claims;
 
 namespace AuthSystem.API.Controller;
 
@@ -15,23 +12,25 @@ namespace AuthSystem.API.Controller;
 [Route("authsystem_api/[controller]")]
 public class AuthCredentialsController : ControllerBase
 {
-    private readonly IUserWindowsAuthService _userWindowsAuthService;
+    private IUserCredentialsAuthService _userCredentialsAuthService;
+
     // Используем стандартные менеджеры ASP.NET Identity
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
 
-    public AuthCredentialsController(IUserWindowsAuthService userWindowsAuthService, SignInManager<User> signInManager, UserManager<User> userManager)
+    public AuthCredentialsController(IUserCredentialsAuthService userCredentialsAuthService, SignInManager<User> signInManager, UserManager<User> userManager)
     {
-        _userWindowsAuthService = userWindowsAuthService;
         _signInManager = signInManager;
         _userManager = userManager;
+        _userCredentialsAuthService = userCredentialsAuthService;
     }
 
 
     [HttpPost("login")]
-    [AllowAnonymous] // КРИТИЧНО: Отключаем Windows-аутентификацию конкретно для этого метода
+    [AllowAnonymous] // КРИТИЧНО
     public async Task<IActionResult> PasswordLogin([FromBody] AuthLoginPassRequestModel model)
     {
+
         if (string.IsNullOrEmpty(model.Login) || string.IsNullOrEmpty(model.Password))
         {
             return BadRequest(new { error = "Логин и пароль обязательны для заполнения" });
@@ -51,50 +50,21 @@ public class AuthCredentialsController : ControllerBase
             return BadRequest(new { error = "Неверный логин или пароль" });
         }
 
-        // 3. Получаем роли пользователя для токена
-        var roles = await _userManager.GetRolesAsync(user);
 
-        // 4. Создаем ClaimsIdentity, ПОЛНОСТЬЮ СОВМЕСТИМЫЙ С OPENIDDICT (как в Windows Auth)
-        var identity = new ClaimsIdentity(
-            TokenValidationParameters.DefaultAuthenticationType,
-            OpenIddictConstants.Claims.Name,
-            OpenIddictConstants.Claims.Role);
+        var authResult = await _userCredentialsAuthService.CredentialsAuthAsync(user);
 
-        // Наполняем клеймами, которые улетят в RedisTicketStore
-        identity.AddClaim(OpenIddictConstants.Claims.Subject, user.Id.ToString());
-        identity.AddClaim(OpenIddictConstants.Claims.Name, user.UserName);
-        identity.AddClaim("display_name", user.FullName ?? user.UserName);
-
-        identity.AddClaim(new Claim("amr", "pwd")); // "pwd" — стандартное OIDC обозначение для пароля
-
-        foreach (var role in roles)
+        if (authResult.IsSuccess)
         {
-            identity.AddClaim(OpenIddictConstants.Claims.Role, role);
+            // аписываем сессию в RedisTicketStore под схемой Identity (сработает ваш Singleton store)
+            await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, authResult.Principal);
+
+            // Возвращаем фронтенду URL для редиректа обратно на /connect/authorize
+            return Ok(new { redirectUrl = model.ReturnUrl });
+        }
+        else
+        {
+            return BadRequest(new { error = "Ошибка при попытке авторизации" });
         }
 
-        var principal = new ClaimsPrincipal(identity);
-
-        // Назначаем Scopes
-        principal.SetScopes(new[] {
-            OpenIddictConstants.Scopes.OpenId,
-            OpenIddictConstants.Scopes.Profile,
-            OpenIddictConstants.Scopes.Roles
-        });
-
-        // Назначаем Destinations (места назначения), чтобы OpenIddict знал, куда их писать
-        principal.SetDestinations(claim => claim.Type switch
-        {
-            OpenIddictConstants.Claims.Subject => [OpenIddictConstants.Destinations.AccessToken, OpenIddictConstants.Destinations.IdentityToken],
-            OpenIddictConstants.Claims.Name => [OpenIddictConstants.Destinations.AccessToken, OpenIddictConstants.Destinations.IdentityToken],
-            OpenIddictConstants.Claims.Role => [OpenIddictConstants.Destinations.AccessToken, OpenIddictConstants.Destinations.IdentityToken],
-            "display_name" => [OpenIddictConstants.Destinations.AccessToken],
-            _ => [OpenIddictConstants.Destinations.AccessToken]
-        });
-
-        // 5. Записываем сессию в RedisTicketStore под схемой Identity (сработает ваш Singleton store)
-        await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
-
-        // Возвращаем фронтенду URL для редиректа обратно на /connect/authorize
-        return Ok(new { redirectUrl = model.ReturnUrl });
     }
 }

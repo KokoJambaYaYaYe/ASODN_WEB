@@ -1,8 +1,8 @@
 using AuthCommon.Redis.Extension;
+using AuthSystem.BFF.Service;
+using AuthSystem.BFF.Service.Abstraction.IService;
 using AuthSystem.Service.Abstraction.IService;
-using AuthSystem.Service.Service;
 using Common.OpenIdDict.Extension;
-using Common.Redis.Constants;
 using Common.Serilog.Extension;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using OpenIddict.Validation.AspNetCore;
 using Scalar.AspNetCore;
 using Serilog;
-using StackExchange.Redis;
 
 #region Builder
 
@@ -18,14 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Подключаем Serilog, читая настройки из builder.Configuration
 builder.Host.AddSerilogExt();
-//builder.Host.UseSerilog(
-//    (context, services, configuration) =>
-//        configuration.ReadFrom.Configuration(context.Configuration)
-//);
 
 builder.Services.AddOpenApi();
 
-// --- НАСТРОЙКА CORS ---
 builder.Services.AddCors(options => {
     options.AddPolicy(
         "AllowReactApp",
@@ -45,50 +39,9 @@ builder.Services.AddCors(options => {
     );
 });
 
-
 builder.Services.AddRedisCacheForAuthCheckExt(builder.Configuration);
 
-
-#region Redis
-
-// --- НАСТРОЙКА REDIS ---
-// Используется для кеширования, хранения сессий и защиты данных.
-
-// Получаем настройки подключения
-//var redisConnString = builder.Configuration.GetConnectionString("RedisConnection");
-//var redisOptions = ConfigurationOptions.Parse(redisConnString);
-
-
-//// Регистрация мультиплексора как Singleton для эффективного использования соединений
-//var redisMultiplexer = ConnectionMultiplexer.Connect(redisOptions);
-//builder.Services.AddSingleton<IConnectionMultiplexer>(redisMultiplexer);
-
-//// Регистрируем IDistributedCache
-//builder.Services.AddStackExchangeRedisCache(options =>
-//{
-//    options.ConnectionMultiplexerFactory = () =>
-//        Task.FromResult<IConnectionMultiplexer>(redisMultiplexer);
-//});
-
-//// Резолвер, который по ключу достает базу из контейнера
-//builder.Services.AddSingleton<Func<RedisDbRoleConst, IDatabase>>(sp =>
-//    role => sp.GetRequiredKeyedService<IDatabase>(role)
-//);
-
-//// Пример регистрации конкретных баз
-//builder.Services.AddKeyedSingleton<IDatabase>(
-//    RedisDbRoleConst.Auth_Cache,
-//    (sp, key) => sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase((int)RedisDbRoleConst.Auth_Cache)
-//);
-
-#endregion Redis
-
-
-// Data Protection: Хранение ключей шифрования кук в Redis (чтобы сессия не слетала при перезапуске сервера)
-//builder.Services.AddDataProtectionPersistKeysToStackExchangeRedisExt(redisMultiplexer, builder.Configuration);
-
 builder.Services.AddOpenIdDictExt(builder.Configuration);
-
 
 builder.Services.AddAuthentication(options => {
     // Для проверки токенов в защищенных эндпоинтах API (Bearer)
@@ -98,7 +51,7 @@ builder.Services.AddAuthentication(options => {
     // по умолчанию отправляем его на стандартную схему Кук Identity
     options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
 })
-.AddNegotiate();
+                .AddNegotiate();
 
 builder.Services.AddAuthorization(options => {
     // Эта политика применяется ко всем стандартным [Authorize] контроллерам
@@ -117,12 +70,14 @@ builder.Services.AddAuthorization(options => {
     });
 });
 
-builder.Services.AddScoped<IUserWindowsAuthService, UserWindowsAuthService>();
+
 
 // --- БИЗНЕС-ЛОГИКА ---
 // Регистрация контроллеров
 builder.Services.AddControllers();
 
+builder.Services.AddScoped<IUserWindowsAuthService, UserWindowsAuthService>();
+builder.Services.AddScoped<IUserCredentialsAuthService, UserCredentialsAuthService>();
 
 #endregion Builder
 
